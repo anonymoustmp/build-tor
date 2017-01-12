@@ -7,7 +7,7 @@ script:
 - curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_0c.tar.gz | tar xz
 - curl -L https://github.com/torproject/tor/archive/tor-0.3.0.1-alpha.tar.gz | tar xz
 - cd $TRAVIS_BUILD_DIR/zlib-1.2.10
-- ./configure --static --prefix=$TRAVIS_BUILD_DIR/deps
+- CFLAGS="-fPIC" ./configure --static --prefix=$TRAVIS_BUILD_DIR/deps
 - make > /dev/null && make install > /dev/null
 - cd $TRAVIS_BUILD_DIR/libevent-release-2.0.22-stable
 - ./autogen.sh
