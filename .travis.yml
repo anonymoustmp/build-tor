@@ -1,0 +1,34 @@
+sudo: false
+language: c
+script:
+- cd $TRAVIS_BUILD_DIR
+- curl -L https://github.com/madler/zlib/archive/v1.2.10.tar.gz | tar xz
+- curl -L https://github.com/libevent/libevent/archive/release-2.0.22-stable.tar.gz | tar xz
+- curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_0c.tar.gz | tar xz
+- curl -L https://github.com/torproject/tor/archive/tor-0.3.0.1-alpha.tar.gz | tar xz
+- cd $TRAVIS_BUILD_DIR/zlib-1.2.10
+- ./configure --static --prefix=$TRAVIS_BUILD_DIR/deps
+- make > /dev/null && make install > /dev/null
+- cd $TRAVIS_BUILD_DIR/libevent-release-2.0.22-stable
+- ./autogen.sh
+- ./configure --disable-debug-mode --disable-openssl --disable-shared --enable-static --with-pic --prefix=$TRAVIS_BUILD_DIR/deps
+- make > /dev/null && make install > /dev/null
+- cd $TRAVIS_BUILD_DIR/openssl-OpenSSL_1_1_0c
+- ./config --prefix=$TRAVIS_BUILD_DIR/deps no-shared no-dso no-tests --with-zlib-include=$TRAVIS_BUILD_DIR/deps/include --with-zlib-lib=$TRAVIS_BUILD_DIR/deps/lib
+- make > /dev/null && make install > /dev/null
+- cd $TRAVIS_BUILD_DIR/tor-tor-0.3.0.1-alpha
+- ./autogen.sh
+- export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
+- ./configure --prefix=$TRAVIS_BUILD_DIR/tor --enable-static-libevent --enable-static-openssl --enable-static-zlib --with-libevent-dir=$TRAVIS_BUILD_DIR/deps --with-openssl-dir=$TRAVIS_BUILD_DIR/deps --with-zlib-dir=$TRAVIS_BUILD_DIR/deps --disable-system-torrc --disable-asciidoc
+- make && make install
+- cd $TRAVIS_BUILD_DIR  && tar cfz tor.tar.gz tor
+- ldd $TRAVIS_BUILD_DIR/tor/bin/tor
+deploy:
+  provider: releases
+  api_key:
+    secure: g5LIw7xLervpjPTu5+MIS/5rqFdQttZHqEmsUSg38kGFdpsrQteW/hYeVbIHRTik1QUesWZVpQ5DCzvx8GQYIO1LkZBmAP7LuTEvnUakKk3DdHWM5ecsvFq5iOdqnvlARAGmTPhgiUwKQKiV4ELLMlpogJV36uCXn4X9d0fKskBwrn0egf1LtrE/fYLSiyOtoodLwfKUmgXstp5k652HbrT2fLmkk5KIANeutBzBKBifwCfkZCj8kNpecD0UjSUfsMFkFeUaBFnR1OwA5dpILNjC87GlFluPZ3afO+V2xPA5ofzOfwcECkMEEDnu70AJ5TULce012cnuCGHo24w29eL4Sb9y1HmPNml167q+/cBNFY86ZbbQGmZL1dpTZf92Z0KvPsm2WjZO6K3Vdcq6xJ45alMQBhf2Bpazg6wINg8GapjAkS+Sj4LgdTwjukoAvztcW0/P+Q6YkSn31eQmE5gIeIk9/oHKHdKsh2LjY1bGDfQ2xlBHWKGf75RDkrlYDkdOR2Ga9wNDOKEgb6edtxBMMpaVmlwYTrFlO8OzieswtFL0AYarIej5siMTIKJPt6cCCyAmVUOgQy/dqr9TBzX6xn0MuaI/AA3YmDLxKTlTd4W9xiBgCUGdvdY6zMCc2X3AHzBs+izB8ZR8xehNcxcEuOuS21M+pWzX0tLRtjk=
+  file: tor.tar.gz
+  overwrite: true
+  on:
+    tags: true
+
