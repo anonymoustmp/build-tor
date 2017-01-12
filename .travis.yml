@@ -3,33 +3,37 @@ language: c
 script:
 - cd $TRAVIS_BUILD_DIR
 - curl -L https://github.com/madler/zlib/archive/v1.2.10.tar.gz | tar xz
-- curl -L https://github.com/libevent/libevent/archive/release-2.0.22-stable.tar.gz | tar xz
+- curl -L https://github.com/libevent/libevent/archive/release-2.0.22-stable.tar.gz
+  | tar xz
 - curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_0c.tar.gz | tar xz
-- curl -L https://github.com/torproject/tor/archive/tor-0.3.0.1-alpha.tar.gz | tar xz
+- curl -L https://github.com/torproject/tor/archive/tor-0.3.0.1-alpha.tar.gz | tar
+  xz
 - cd $TRAVIS_BUILD_DIR/zlib-1.2.10
 - CFLAGS="-fPIC" ./configure --static --prefix=$TRAVIS_BUILD_DIR/deps
 - make > /dev/null && make install > /dev/null
 - cd $TRAVIS_BUILD_DIR/libevent-release-2.0.22-stable
-- ./autogen.sh
-- ./configure --disable-debug-mode --disable-openssl --disable-shared --enable-static --with-pic --prefix=$TRAVIS_BUILD_DIR/deps
+- "./autogen.sh"
+- "./configure --disable-debug-mode --disable-openssl --disable-shared --enable-static
+  --with-pic --prefix=$TRAVIS_BUILD_DIR/deps"
 - make > /dev/null && make install > /dev/null
 - cd $TRAVIS_BUILD_DIR/openssl-OpenSSL_1_1_0c
-- ./config --prefix=$TRAVIS_BUILD_DIR/deps --with-zlib-include=$TRAVIS_BUILD_DIR/deps/include --with-zlib-lib=$TRAVIS_BUILD_DIR/deps/lib
+- "./config --prefix=$TRAVIS_BUILD_DIR/deps --with-zlib-include=$TRAVIS_BUILD_DIR/deps/include
+  --with-zlib-lib=$TRAVIS_BUILD_DIR/deps/lib"
 - make > /dev/null && make install > /dev/null
 - ls -l $TRAVIS_BUILD_DIR/deps/lib
 - cd $TRAVIS_BUILD_DIR/tor-tor-0.3.0.1-alpha
-- ./autogen.sh
-- ./configure --prefix=$TRAVIS_BUILD_DIR/tor --enable-static-libevent --enable-static-openssl --enable-static-zlib --with-libevent-dir=$TRAVIS_BUILD_DIR/deps --with-openssl-dir=$TRAVIS_BUILD_DIR/deps --with-zlib-dir=$TRAVIS_BUILD_DIR/deps --disable-system-torrc --disable-asciidoc
+- "./autogen.sh"
+- "./configure --prefix=$TRAVIS_BUILD_DIR/tor --enable-static-libevent --enable-static-openssl
+  --enable-static-zlib --with-libevent-dir=$TRAVIS_BUILD_DIR/deps --with-openssl-dir=$TRAVIS_BUILD_DIR/deps
+  --with-zlib-dir=$TRAVIS_BUILD_DIR/deps --disable-system-torrc --disable-asciidoc"
 - make && make install
 - cd $TRAVIS_BUILD_DIR && tar cfz tor.tar.gz tor
 - ldd $TRAVIS_BUILD_DIR/tor/bin/tor
 deploy:
   provider: releases
   api_key:
-    secure: g5LIw7xLervpjPTu5+MIS/5rqFdQttZHqEmsUSg38kGFdpsrQteW/hYeVbIHRTik1QUesWZVpQ5DCzvx8GQYIO1LkZBmAP7LuTEvnUakKk3DdHWM5ecsvFq5iOdqnvlARAGmTPhgiUwKQKiV4ELLMlpogJV36uCXn4X9d0fKskBwrn0egf1LtrE/fYLSiyOtoodLwfKUmgXstp5k652HbrT2fLmkk5KIANeutBzBKBifwCfkZCj8kNpecD0UjSUfsMFkFeUaBFnR1OwA5dpILNjC87GlFluPZ3afO+V2xPA5ofzOfwcECkMEEDnu70AJ5TULce012cnuCGHo24w29eL4Sb9y1HmPNml167q+/cBNFY86ZbbQGmZL1dpTZf92Z0KvPsm2WjZO6K3Vdcq6xJ45alMQBhf2Bpazg6wINg8GapjAkS+Sj4LgdTwjukoAvztcW0/P+Q6YkSn31eQmE5gIeIk9/oHKHdKsh2LjY1bGDfQ2xlBHWKGf75RDkrlYDkdOR2Ga9wNDOKEgb6edtxBMMpaVmlwYTrFlO8OzieswtFL0AYarIej5siMTIKJPt6cCCyAmVUOgQy/dqr9TBzX6xn0MuaI/AA3YmDLxKTlTd4W9xiBgCUGdvdY6zMCc2X3AHzBs+izB8ZR8xehNcxcEuOuS21M+pWzX0tLRtjk=
+    secure: YnZSNHCmCQZZSZN4787r6JnvXQCiyQbBqVqaaoBXc9zsQTPmAAJ7AZqVwZv6n2NEdfNZ2JL3J1JUx444ByKhF4KaMqPVfPAEL9jjuii9R0k3K4kYxrzWRob2k449hqzLm5l4EzHIoVdTcOKDsACys5r9i/R20/h2pbsRUm9Sltqw+irxBQaGWvSc3rQHhPwFj7FpYZdEFHjLpc+ByXnzsC13RYRxA4lcbV+i/7lZoNuhS3WaoMiO1GarjxeMzwrhA9lKLP8itPSBqt+0xtDFjiC1NGpJI6Y2DS+/Ea3Zl/hRzYelBypYLMboi0LoSC6Ac9f8bR74bg8IrY+yVSton61/vZ3HTO/gGhN1ji1yLZtdblIBdwGk09bXJW/j7HMYNDGU3cWATIWMlpaPtSZQY4QTetYpLYAn+kbLqbfBq0tYy8qoEuS8EWTbsDOvaKwUYdWn6npTzU/KkgAA1o4ILwdgFU77c1rNJjzRQCY3SzMbq4tY4vJw0HNmKKZmoUhsx/qYxZReAiX/NHv1gSfmuhKcEpsd+btIAIS+eP0HJF0+dgrc6Jh2rVXNTvodzIIb0RV2h5vBxgYS9EIL9Dlg9N+jvKKyteR9BQtj+wg5+/f7g6X0y1i9O0dZG/3S7GgvMtrDvsHxhmpH0O4+IyN72itUrv32piLo0uRyHv47KYw=
   file: tor.tar.gz
-  overwrite: true
   skip_cleanup: true
   on:
     tags: true
-
