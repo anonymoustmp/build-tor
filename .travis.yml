@@ -19,8 +19,7 @@ script:
 - ls -l $TRAVIS_BUILD_DIR/deps/lib
 - cd $TRAVIS_BUILD_DIR/tor-tor-0.3.0.1-alpha
 - ./autogen.sh
-- export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
-- ./configure --prefix=$TRAVIS_BUILD_DIR/tor --enable-static-libevent --enable-static-openssl --enable-static-zlib --with-libevent-dir=$TRAVIS_BUILD_DIR/deps --with-openssl-dir=$TRAVIS_BUILD_DIR/deps --with-zlib-dir=$TRAVIS_BUILD_DIR/deps --disable-system-torrc --disable-asciidoc
+- ./configure --prefix=$TRAVIS_BUILD_DIR/tor --enable-static-libevent --enable-static-openssl --enable-static-zlib --with-libevent-dir=$TRAVIS_BUILD_DIR/deps --with-ssl-dir=$TRAVIS_BUILD_DIR/deps --with-zlib-dir=$TRAVIS_BUILD_DIR/deps --disable-system-torrc --disable-asciidoc
 - make && make install
 - cd $TRAVIS_BUILD_DIR && tar cfz tor.tar.gz tor
 - ldd $TRAVIS_BUILD_DIR/tor/bin/tor
