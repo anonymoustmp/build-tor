@@ -1,4 +1,4 @@
-# build-tor [![Build Status](https://travis-ci.org/anonymoustmp/build-tor.svg?branch=master)](https://travis-ci.org/anonymoustmp/build-tor)
+# build-tor [![Build Status](https://travis-ci.org/sigma0f/build-tor.svg?branch=master)](https://travis-ci.org/sigma0f/build-tor)
 Travis CI tor build repo
 
-See also [anonymoustmp/build-meek](https://github.com/anonymoustmp/build-meek)
+See also [sigma0f/build-meek](https://github.com/sigma0f/build-meek)
