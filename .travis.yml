@@ -26,6 +26,7 @@ script:
   --enable-static-zlib --with-libevent-dir=$TRAVIS_BUILD_DIR/deps --with-openssl-dir=$TRAVIS_BUILD_DIR/deps
   --with-zlib-dir=$TRAVIS_BUILD_DIR/deps --disable-system-torrc --disable-asciidoc --disable-lzma"
 - make && make install
+- strip $TRAVIS_BUILD_DIR/tor/bin/tor
 - cd $TRAVIS_BUILD_DIR && tar cfz tor.tar.gz tor
 - ldd $TRAVIS_BUILD_DIR/tor/bin/tor
 deploy:
